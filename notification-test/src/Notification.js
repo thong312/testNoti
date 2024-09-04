@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Client } from '@stomp/stompjs';
 
-const routingKey = "5.studentNoti";
+const routingKey = "studentNoti";
 const exchangeName = "test-exchange";
 const webSocketPort = "15674";
 const domainName = "kietpt.online"
 
 const Notifications = () => {
     const [notifications, setNotifications] = useState([]);
+    let client;
 
     useEffect(() => {
         const headers = {
             login: 'myadmin', // Replace with your RabbitMQ username
             passcode: 'mypassword' // Replace with your RabbitMQ password
         };
-        const client = new Client({
+        client = new Client({
             brokerURL: `ws://${domainName}:${webSocketPort}/ws`,
             connectHeaders: headers,
             onConnect: () => {
@@ -33,10 +34,19 @@ const Notifications = () => {
             onStompError: (frame) => {
                 const readableString = new TextDecoder().decode(frame.binaryBody);
                 console.log('STOMP error', readableString);
-            }
+            },
+            appendMissingNULLonIncoming: true,
+            forceBinaryWSFrames: true
         });
 
         client.activate();
+
+        return () => {
+            if (client) {
+                console.log("Disconnecting from RabbitMQ");
+                client.deactivate(); // Properly deactivate the client on component unmount
+            }
+        };
     }, []);
 
     return (
