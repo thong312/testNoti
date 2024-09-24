@@ -1,62 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import { Client } from '@stomp/stompjs';
-
-const routingKey = "studentNoti";
-const exchangeName = "test-exchange";
-const webSocketPort = "15674";
-const domainName = "kietpt.online"
+import * as signalR from "@microsoft/signalr"
 
 const Notifications = () => {
-    const [notifications, setNotifications] = useState([]);
-    let client;
+    const [connection, setConnection] = useState(null);
+    const [message, setMessage] = useState('');
 
     useEffect(() => {
-        const headers = {
-            login: 'myadmin', // Replace with your RabbitMQ username
-            passcode: 'mypassword' // Replace with your RabbitMQ password
-        };
-        client = new Client({
-            brokerURL: `ws://${domainName}:${webSocketPort}/ws`,
-            connectHeaders: headers,
-            onConnect: () => {
-                console.log('Connected to RabbitMQ');
-                client.subscribe(`/exchange/${exchangeName}/${routingKey}`, message => {
-                    console.log(`Received: ${message.body}`);
+        // Create the SignalR connection
+        const newConnection = new signalR.HubConnectionBuilder()
+            .withUrl('https://whateat-demo.xyz/noti-hub', { withCredentials: false })
+            .withAutomaticReconnect()
+            .build();
 
-                    // Append new notifications to the state
-                    setNotifications(prevNotifications => [
-                        ...prevNotifications,
-                        message.body
-                    ]);
-                }
-                );
-            },
-            onStompError: (frame) => {
-                const readableString = new TextDecoder().decode(frame.binaryBody);
-                console.log('STOMP error', readableString);
-            },
-            appendMissingNULLonIncoming: true,
-            forceBinaryWSFrames: true
-        });
+        // Start the connection
+        newConnection.start()
+            .then(() => {
+                console.log('SignalR Connected!');
+                // You can send a message to the server here if needed
+                newConnection.on('ReceiveMessage', (user, receivedMessage) => {
+                    setMessage(`${user}: ${receivedMessage}`);
+                });
+            })
+            .catch(err => console.log('SignalR Connection Error: ', err));
 
-        client.activate();
+        setConnection(newConnection);
 
+        // Cleanup the connection when component unmounts
         return () => {
-            if (client) {
-                console.log("Disconnecting from RabbitMQ");
-                client.deactivate(); // Properly deactivate the client on component unmount
+            if (connection) {
+                connection.stop();
             }
         };
     }, []);
 
     return (
         <div>
-            <h2>Notifications</h2>
-            <ul>
-                {notifications.map((notification, index) => (
-                    <li key={index}>{notification}</li>
-                ))}
-            </ul>
+            <h1>SignalR Messages</h1>
+            <p>{message}</p>
         </div>
     );
 };
