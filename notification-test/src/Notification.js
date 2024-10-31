@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as signalR from "@microsoft/signalr"
 
 const Notifications = () => {
-    const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySW5mbyI6IntcIklkXCI6XCI1YTU3MjIzYS02ZTdkLTQwMWItYTE5ZS1iZjkyODJkYjY5ZmVcIixcIkVtYWlsXCI6XCJjdXN0b21lcjFAZ21haWwuY29tXCIsXCJMb2dpbk1ldGhvZFwiOlwiRGVmYXVsdFwiLFwiUm9sZVwiOlwiQ3VzdG9tZXJcIixcIlN0YXR1c1wiOlwiQWN0aXZlXCJ9IiwiVG9rZW5DbGFpbSI6IkZvclZlcmlmeU9ubHkiLCJuYmYiOjE3MzAzNjAwODUsImV4cCI6MTczMDM2MTg4NSwiaWF0IjoxNzMwMzYwMDg1LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUyNDYiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUyNDYifQ.CzsZcMz03cViRarb1OxiZLvPMNU5gYHLls7fsRpvE_k";
+    const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySW5mbyI6IntcIklkXCI6XCI1YTU3MjIzYS02ZTdkLTQwMWItYTE5ZS1iZjkyODJkYjY5ZmVcIixcIkVtYWlsXCI6XCJjdXN0b21lcjFAZ21haWwuY29tXCIsXCJMb2dpbk1ldGhvZFwiOlwiRGVmYXVsdFwiLFwiUm9sZVwiOlwiQ3VzdG9tZXJcIixcIlN0YXR1c1wiOlwiQWN0aXZlXCJ9IiwiVG9rZW5DbGFpbSI6IkZvclZlcmlmeU9ubHkiLCJuYmYiOjE3MzAzNTkyNjUsImV4cCI6MTczMDM2MTA2NSwiaWF0IjoxNzMwMzU5MjY1LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUyNDYiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUyNDYifQ.SLlmrOTiplZCx3__rdLb6vrN655UCWrhcKA0eDPD5BU";
     const [connection, setConnection] = useState(null);
     const [message, setMessage] = useState('');
     const [message2, setMessage2] = useState('');
